@@ -7,20 +7,17 @@ class Menu {
   String message;
   List<DataMenu> data;
 
-  Menu({
-    required this.message,
-    required this.data,
-  });
+  Menu({required this.message, required this.data});
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
-        message: json["message"],
-        data: List<DataMenu>.from(json["data"].map((x) => DataMenu.fromJson(x))),
-      );
+    message: json["message"],
+    data: List<DataMenu>.from(json["data"].map((x) => DataMenu.fromJson(x))),
+  );
 
   Map<String, dynamic> toJson() => {
-        "message": message,
-        "data": List<dynamic>.from(data.map((x) => x.toJson())),
-      };
+    "message": message,
+    "data": List<dynamic>.from(data.map((x) => x.toJson())),
+  };
 }
 
 class DataMenu {
@@ -57,7 +54,13 @@ class DataMenu {
       description: descriptionValues.map[json["description"]] ?? fallbackDesc,
       date: DateTime.tryParse(json["date"] ?? '') ?? DateTime.now(),
       price: json["price"] ?? 0,
-      imageUrl: json["image_url"],
+      imageUrl:
+          json["image_url"] != null
+              ? (json["image_url"] as String).replaceFirst(
+                '/menus/',
+                '/public/menus/',
+              )
+              : null,
       imagePath: json["image_path"],
       category: json["category"],
       categoryId: json["category_id"],
@@ -65,38 +68,38 @@ class DataMenu {
   }
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "title": titleValues.reverse[title],
-        "description": descriptionValues.reverse[description],
-        "date": "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
-        "price": price,
-        "image_url": imageUrl,
-        "image_path": imagePath,
-        "category": category,
-        "category_id": categoryId,
-      };
+    "id": id,
+    "title": titleValues.reverse[title],
+    "description": descriptionValues.reverse[description],
+    "date":
+        "${date.year.toString().padLeft(4, '0')}-${date.month.toString().padLeft(2, '0')}-${date.day.toString().padLeft(2, '0')}",
+    "price": price,
+    "image_url": imageUrl,
+    "image_path": imagePath,
+    "category": category,
+    "category_id": categoryId,
+  };
 }
 
 // ENUMS
 
-enum Description {
-  NASI_GORENG_TELUR_DAGING
-}
+enum Description { NASI_GORENG_TELUR_DAGING }
 
 final descriptionValues = EnumValues({
-  "Nasi goreng + telur + Daging": Description.NASI_GORENG_TELUR_DAGING
+  "Nasi goreng + telur + Daging": Description.NASI_GORENG_TELUR_DAGING,
 });
 
 enum Title {
   MAKANAN_AMRIK,
   NASI_GORENG_DAGING,
-  NASI_GORENG_DAGING_ASDASDASDASDASDASD
+  NASI_GORENG_DAGING_ASDASDASDASDASDASD,
 }
 
 final titleValues = EnumValues({
   "Makanan amrik": Title.MAKANAN_AMRIK,
   "Nasi Goreng Daging": Title.NASI_GORENG_DAGING,
-  "Nasi Goreng Daging asdasdasdasdasdasd": Title.NASI_GORENG_DAGING_ASDASDASDASDASDASD
+  "Nasi Goreng Daging asdasdasdasdasdasd":
+      Title.NASI_GORENG_DAGING_ASDASDASDASDASDASD,
 });
 
 class EnumValues<T> {

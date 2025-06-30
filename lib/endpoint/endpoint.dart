@@ -4,5 +4,5 @@ class Endpoint {
   static const String login = "$baseUrl/api/login";
   static const String menus = "$baseUrl/api/menus";
   static const String orders = "$baseUrl/api/orders";
+  static const String categories = "$baseUrl/api/categories";
 }
-

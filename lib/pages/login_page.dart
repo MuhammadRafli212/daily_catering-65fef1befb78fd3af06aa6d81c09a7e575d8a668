@@ -160,12 +160,15 @@ class _LoginPageState extends State<LoginPage> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: const Color(0xFFBBC3A4),
                     ),
-                    child: isLoading
-                        ? const CircularProgressIndicator(color: Colors.black)
-                        : const Text(
-                            "Login",
-                            style: TextStyle(color: Colors.black),
-                          ),
+                    child:
+                        isLoading
+                            ? const CircularProgressIndicator(
+                              color: Colors.black,
+                            )
+                            : const Text(
+                              "Login",
+                              style: TextStyle(color: Colors.black),
+                            ),
                   ),
                 ),
               ],
