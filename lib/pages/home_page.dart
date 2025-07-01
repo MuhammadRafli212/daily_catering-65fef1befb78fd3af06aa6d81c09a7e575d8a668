@@ -72,11 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.shopping_cart_outlined),
-            label: 'Chart',
+            label: 'Keranjang',
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.person_outline),
-            label: 'Profile',
+            label: 'Profil',
           ),
         ],
       ),
@@ -102,7 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   const Text(
-                    "Healthy Life  Fresh Food",
+                    "Makan Bergizi Gratis",
                     style: TextStyle(
                       fontSize: 22,
                       fontWeight: FontWeight.bold,
@@ -111,7 +111,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   const SizedBox(height: 16),
                   const Text(
-                    "FEATURED LUNCH BOXES",
+                    "Menu Makan Bergizi",
                     style: TextStyle(fontSize: 14, color: Colors.white),
                   ),
                   const SizedBox(height: 8),
@@ -126,6 +126,9 @@ class _HomeScreenState extends State<HomeScreen> {
                           'assets/images/waffle.jpg',
                           'assets/images/pan.jpg',
                           'assets/images/salad.jpg',
+                          'assets/images/tongkol.jpg',
+                          'assets/images/piz.jpg',
+                          'assets/images/dbef.jpg',
                         ].map((image) {
                           return Builder(
                             builder:
@@ -354,6 +357,9 @@ class _HomeScreenState extends State<HomeScreen> {
                                                               TextButton(
                                                                 onPressed: () {
                                                                   _addToCart({
+                                                                    "menu_id":
+                                                                        item.id
+                                                                            .toString(), // ← ✅ Tambahkan ini
                                                                     "title":
                                                                         titleValues
                                                                             .reverse[item

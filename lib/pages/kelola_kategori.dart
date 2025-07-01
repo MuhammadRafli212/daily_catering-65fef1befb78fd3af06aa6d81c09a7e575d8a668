@@ -2,7 +2,7 @@ import 'dart:convert';
 
 import 'package:daily_catering/api/preferences.dart';
 import 'package:daily_catering/endpoint/endpoint.dart';
-import 'package:daily_catering/model/create_menu.dart';
+import 'package:daily_catering/model/update_kategori.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -14,7 +14,7 @@ class KelolaKategoriPage extends StatefulWidget {
 }
 
 class _KelolaKategoriPageState extends State<KelolaKategoriPage> {
-  List<Data> kategoriList = [];
+  List<DataKategori> kategoriList = [];
   final TextEditingController _nameController = TextEditingController();
   bool isLoading = false;
 
@@ -37,8 +37,8 @@ class _KelolaKategoriPageState extends State<KelolaKategoriPage> {
       );
       if (response.statusCode == 200) {
         final List<dynamic> dataList = jsonDecode(response.body)['data'];
-        final List<Data> fetched =
-            dataList.map((e) => Data.fromJson(e)).toList();
+        final List<DataKategori> fetched =
+            dataList.map((e) => DataKategori.fromJson(e)).toList();
         setState(() {
           kategoriList = fetched;
         });
@@ -106,7 +106,7 @@ class _KelolaKategoriPageState extends State<KelolaKategoriPage> {
     }
   }
 
-  void showFormDialog({Data? kategori}) {
+  void showFormDialog({DataKategori? kategori}) {
     if (kategori != null) {
       _nameController.text = kategori.name;
     } else {
@@ -151,8 +151,12 @@ class _KelolaKategoriPageState extends State<KelolaKategoriPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Kelola Kategori Makanan"),
-        backgroundColor: Colors.green.shade800,
+        backgroundColor: const Color(0xFF5C5470),
+        iconTheme: const IconThemeData(color: Colors.white),
+        title: const Text(
+          "Kelola Kategori Makanan",
+          style: TextStyle(color: Colors.white),
+        ),
       ),
       body:
           isLoading
@@ -192,8 +196,8 @@ class _KelolaKategoriPageState extends State<KelolaKategoriPage> {
               ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => showFormDialog(),
-        backgroundColor: Colors.green.shade800,
-        child: const Icon(Icons.add),
+        backgroundColor: const Color(0xFF5C5470),
+        child: const Icon(Icons.add, color: Colors.white),
       ),
     );
   }

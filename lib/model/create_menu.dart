@@ -1,22 +1,22 @@
 // To parse this JSON data, do
 //
-//     final createMenu = createMenuFromJson(jsonString);
+//     final createmenu = createmenuFromJson(jsonString);
 
 import 'dart:convert';
 
-CreateMenu createMenuFromJson(String str) =>
-    CreateMenu.fromJson(json.decode(str));
+Createmenu createmenuFromJson(String str) =>
+    Createmenu.fromJson(json.decode(str));
 
-String createMenuToJson(CreateMenu data) => json.encode(data.toJson());
+String createmenuToJson(Createmenu data) => json.encode(data.toJson());
 
-class CreateMenu {
+class Createmenu {
   String message;
   Data data;
 
-  CreateMenu({required this.message, required this.data});
+  Createmenu({required this.message, required this.data});
 
-  factory CreateMenu.fromJson(Map<String, dynamic> json) =>
-      CreateMenu(message: json["message"], data: Data.fromJson(json["data"]));
+  factory Createmenu.fromJson(Map<String, dynamic> json) =>
+      Createmenu(message: json["message"], data: Data.fromJson(json["data"]));
 
   Map<String, dynamic> toJson() => {"message": message, "data": data.toJson()};
 }
@@ -55,8 +55,6 @@ class Data {
     category: json["category"],
     categoryId: json["category_id"],
   );
-
-  String get name => '';
 
   Map<String, dynamic> toJson() => {
     "id": id,

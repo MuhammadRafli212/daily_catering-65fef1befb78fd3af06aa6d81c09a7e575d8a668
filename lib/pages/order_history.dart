@@ -28,25 +28,26 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
   void _confirmDelete(int index, {bool isDeleted = false}) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        title: const Text('Hapus Pesanan?'),
-        content: const Text(
-          'Apakah Anda yakin ingin menghapus pesanan ini?',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Batal'),
+      builder:
+          (ctx) => AlertDialog(
+            title: const Text('Hapus Pesanan?'),
+            content: const Text(
+              'Apakah Anda yakin ingin menghapus pesanan ini?',
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Batal'),
+              ),
+              TextButton(
+                onPressed: () {
+                  Navigator.pop(ctx);
+                  _deleteOrder(index, isDeleted: isDeleted);
+                },
+                child: const Text('Hapus', style: TextStyle(color: Colors.red)),
+              ),
+            ],
           ),
-          TextButton(
-            onPressed: () {
-              Navigator.pop(ctx); // Tutup dialog
-              _deleteOrder(index, isDeleted: isDeleted);
-            },
-            child: const Text('Hapus', style: TextStyle(color: Colors.red)),
-          ),
-        ],
-      ),
     );
   }
 
@@ -60,66 +61,149 @@ class _OrderHistoryPageState extends State<OrderHistoryPage> {
     });
   }
 
-  Widget _buildOrderCard(
+  Widget _buildStyledCard(
     Map<String, String> order,
     int index, {
     bool isDeleted = false,
   }) {
-    return Card(
-      color: isDeleted ? Colors.red.shade50 : Colors.white,
-      margin: const EdgeInsets.only(bottom: 12),
-      child: ListTile(
-        leading: Image.asset(
-          order["image"] ?? "",
-          width: 60,
-          height: 60,
-          fit: BoxFit.cover,
-        ),
-        title: Text(order["title"] ?? "-"),
-        subtitle: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text("Harga: ${order["price"] ?? "-"}"),
-            if (order.containsKey("address"))
-              Text("Alamat: ${order["address"]}"),
-            if (order.containsKey("status"))
-              Text("Status: ${order["status"]}"),
-          ],
-        ),
-        trailing: IconButton(
-          icon: const Icon(Icons.delete, color: Colors.red),
-          onPressed: () => _confirmDelete(index, isDeleted: isDeleted),
-        ),
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8),
+      padding: const EdgeInsets.all(16),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade300),
+        borderRadius: BorderRadius.circular(16),
+        color: isDeleted ? Colors.red.shade50 : Colors.white,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.grey.withOpacity(0.1),
+            blurRadius: 5,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              ClipRRect(
+                borderRadius: BorderRadius.circular(8),
+                child:
+                    order["image"] != null && order["image"]!.isNotEmpty
+                        ? Image.network(
+                          order["image"]!,
+                          width: 80,
+                          height: 80,
+                          fit: BoxFit.cover,
+                          errorBuilder:
+                              (_, __, ___) => const Icon(
+                                Icons.image_not_supported,
+                                size: 80,
+                              ),
+                        )
+                        : const Icon(Icons.image, size: 80),
+              ),
+              const SizedBox(width: 12),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      order["title"] ?? "-",
+                      style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                    const SizedBox(height: 4),
+                    Text("Harga: ${order["price"] ?? "-"}"),
+                    if (order.containsKey("status"))
+                      Padding(
+                        padding: const EdgeInsets.only(top: 4.0),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: 8,
+                            vertical: 4,
+                          ),
+                          decoration: BoxDecoration(
+                            color: Colors.green.shade100,
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Text(
+                            order["status"]!,
+                            style: const TextStyle(
+                              color: Colors.green,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                        ),
+                      ),
+                  ],
+                ),
+              ),
+              IconButton(
+                icon: const Icon(Icons.delete, color: Colors.red),
+                onPressed: () => _confirmDelete(index, isDeleted: isDeleted),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text("Order History")),
-      body: ListView(
-        padding: const EdgeInsets.all(16),
-        children: [
-          const Text(
-            "Completed Orders",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+    return DefaultTabController(
+      length: 2,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text("Activity"),
+          bottom: const TabBar(
+            tabs: [Tab(text: "Complete"), Tab(text: "Cancel")],
           ),
-          const SizedBox(height: 8),
-          ..._orders.asMap().entries.map(
-                (entry) => _buildOrderCard(entry.value, entry.key),
+        ),
+        body: TabBarView(
+          children: [
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Upcoming Reservations",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  ..._orders.asMap().entries.map(
+                    (entry) => _buildStyledCard(entry.value, entry.key),
+                  ),
+                ],
               ),
-          const SizedBox(height: 24),
-          const Text(
-            "Deleted Orders",
-            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-          ),
-          const SizedBox(height: 8),
-          ..._deletedOrders.asMap().entries.map(
-                (entry) =>
-                    _buildOrderCard(entry.value, entry.key, isDeleted: true),
+            ),
+            SingleChildScrollView(
+              padding: const EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Text(
+                    "Deleted Orders",
+                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(height: 12),
+                  ..._deletedOrders.asMap().entries.map(
+                    (entry) => _buildStyledCard(
+                      entry.value,
+                      entry.key,
+                      isDeleted: true,
+                    ),
+                  ),
+                ],
               ),
-        ],
+            ),
+          ],
+        ),
       ),
     );
   }

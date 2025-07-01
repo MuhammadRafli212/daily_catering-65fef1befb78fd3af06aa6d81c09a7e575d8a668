@@ -24,17 +24,8 @@ class ChartPage extends StatefulWidget {
 }
 
 class _ChartPageState extends State<ChartPage> {
-  final TextEditingController _addressController = TextEditingController();
-
   Future<void> _checkout(BuildContext context) async {
     if (widget.cartItems.isEmpty) return;
-
-    if (_addressController.text.trim().isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Alamat pengiriman wajib diisi.")),
-      );
-      return;
-    }
 
     showDialog(
       context: context,
@@ -48,6 +39,7 @@ class _ChartPageState extends State<ChartPage> {
 
     if (success) {
       widget.onCheckout(widget.cartItems);
+
       Navigator.push(
         context,
         MaterialPageRoute(
@@ -58,8 +50,7 @@ class _ChartPageState extends State<ChartPage> {
                         .map(
                           (item) => {
                             ...item,
-                            "address": _addressController.text,
-                            "status": "Pending",
+                            "status": "Pending", // tampilkan status di history
                           },
                         )
                         .toList(),
@@ -91,27 +82,28 @@ class _ChartPageState extends State<ChartPage> {
       final token = prefs.getString('token');
       if (token == null) throw Exception("Token tidak ditemukan");
 
-      final List<Map<String, dynamic>> itemsWithStatus =
-          widget.cartItems
-              .map(
-                (item) => {
-                  ...item,
-                  "address": _addressController.text,
-                  "status": "Pending",
-                },
-              )
-              .toList();
+      for (var item in widget.cartItems) {
+        final response = await http.post(
+          Uri.parse('http://appkaterings.mobileprojp.com/api/orders'),
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': 'Bearer $token',
+          },
+          body: jsonEncode({
+            'menu_id': int.tryParse(item['menu_id'] ?? '0') ?? 0,
+            'delivery_address': 'Alamat Default',
+          }),
+        );
 
-      final response = await http.post(
-        Uri.parse('http://appkaterings.mobileprojp.com/api/orders'),
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer $token',
-        },
-        body: jsonEncode({'items': itemsWithStatus}),
-      );
+        print("Status: ${response.statusCode}");
+        print("Body: ${response.body}");
 
-      return response.statusCode == 200;
+        if (response.statusCode != 200 && response.statusCode != 201) {
+          return false;
+        }
+      }
+
+      return true;
     } catch (e) {
       print("Checkout Error: $e");
       return false;
@@ -139,13 +131,13 @@ class _ChartPageState extends State<ChartPage> {
                             leading:
                                 product["image"] != null
                                     ? Image.network(
-                                      errorBuilder:
-                                          (context, error, stackTrace) =>
-                                              Icon(Icons.food_bank_sharp),
                                       product["image"]!,
                                       width: 60,
                                       height: 60,
                                       fit: BoxFit.cover,
+                                      errorBuilder:
+                                          (context, error, stackTrace) =>
+                                              const Icon(Icons.food_bank_sharp),
                                     )
                                     : const Icon(
                                       Icons.image_not_supported,
@@ -157,6 +149,7 @@ class _ChartPageState extends State<ChartPage> {
                             subtitle: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
+                                Text("ID Menu: ${product["menu_id"] ?? "-"}"),
                                 Text("Toko: ${product["store"] ?? "-"}"),
                                 const SizedBox(height: 4),
                                 Text(
@@ -174,20 +167,6 @@ class _ChartPageState extends State<ChartPage> {
                       },
                     ),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: TextField(
-                      controller: _addressController,
-                      decoration: InputDecoration(
-                        labelText: "Alamat Pengiriman",
-                        border: OutlineInputBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                        prefixIcon: const Icon(Icons.location_on),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(height: 12),
                   Padding(
                     padding: const EdgeInsets.all(16),
                     child: ElevatedButton.icon(
