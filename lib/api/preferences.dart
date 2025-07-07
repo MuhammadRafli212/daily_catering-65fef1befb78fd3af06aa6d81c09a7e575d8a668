@@ -17,4 +17,9 @@ class PreferencesHelper {
     final prefs = await SharedPreferences.getInstance();
     await prefs.remove(_tokenKey);
   }
+
+  static Future<void> clearToken() async {
+    final prefs = await SharedPreferences.getInstance();
+    await prefs.remove(_tokenKey);
+  }
 }

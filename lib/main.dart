@@ -1,4 +1,4 @@
-import 'package:daily_catering/pages/onboard_page.dart';
+import 'package:daily_catering/pages/splash.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -14,7 +14,7 @@ class MyApp extends StatelessWidget {
       title: 'Daily Catering',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(primarySwatch: Colors.green),
-      home: const OnboardingPage(),
+      home: const SplashScreen(),
     );
   }
 }

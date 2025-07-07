@@ -1,5 +1,7 @@
+import 'package:daily_catering/api/preferences.dart';
 import 'package:daily_catering/pages/kelola_kategori.dart';
 import 'package:daily_catering/pages/kelola_menu.dart';
+import 'package:daily_catering/pages/onboard_page.dart';
 import 'package:flutter/material.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -131,9 +133,43 @@ class _ProfileScreenState extends State<ProfileScreen>
                           ),
                           _buildMenuItem(
                             icon: Icons.logout,
-                            title: "logout",
+                            title: "Logout",
                             onTap: () {
-                              Navigator.pop(context); // Atau navigasi ke login
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text("Konfirmasi Logout"),
+                                    content: const Text(
+                                      "Apakah Anda yakin ingin logout?",
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        child: const Text("Batal"),
+                                        onPressed:
+                                            () => Navigator.of(context).pop(),
+                                      ),
+                                      TextButton(
+                                        child: const Text("Logout"),
+                                        onPressed: () async {
+                                          Navigator.of(
+                                            context,
+                                          ).pop(); // Tutup dialog
+                                          await PreferencesHelper.clearToken(); // Hapus token
+                                          Navigator.pushAndRemoveUntil(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder:
+                                                  (context) => OnboardingPage(),
+                                            ),
+                                            (route) => false,
+                                          );
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
                             },
                           ),
                         ],

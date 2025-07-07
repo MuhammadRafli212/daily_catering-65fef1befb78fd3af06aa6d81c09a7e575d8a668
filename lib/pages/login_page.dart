@@ -16,6 +16,7 @@ class _LoginPageState extends State<LoginPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isLoading = false;
+  bool obscurePassword = true;
 
   Future<void> _loginUser() async {
     setState(() {
@@ -31,7 +32,6 @@ class _LoginPageState extends State<LoginPage> {
       final token = res["data"]["token"];
 
       if (token != null) {
-        // Simpan token ke SharedPreferences
         await PreferencesHelper.saveToken(token);
         print("Token disimpan: $token");
 
@@ -129,12 +129,25 @@ class _LoginPageState extends State<LoginPage> {
                 const SizedBox(height: 15),
                 TextField(
                   controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  obscureText: obscurePassword,
+                  decoration: InputDecoration(
                     labelText: "Password",
                     filled: true,
-                    fillColor: Color(0xFFFAF6E9),
-                    border: OutlineInputBorder(),
+                    fillColor: const Color(0xFFFAF6E9),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey[700],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),

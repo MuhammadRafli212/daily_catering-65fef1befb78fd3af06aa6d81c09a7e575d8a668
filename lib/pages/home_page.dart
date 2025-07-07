@@ -117,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   const SizedBox(height: 8),
                   CarouselSlider(
                     options: CarouselOptions(
-                      height: 160,
+                      height: 180,
                       autoPlay: true,
                       enlargeCenterPage: true,
                     ),
@@ -129,6 +129,8 @@ class _HomeScreenState extends State<HomeScreen> {
                           'assets/images/tongkol.jpg',
                           'assets/images/piz.jpg',
                           'assets/images/dbef.jpg',
+                          'assets/images/lobster.jpg',
+                          'assets/images/kun.jpg',
                         ].map((image) {
                           return Builder(
                             builder:
@@ -319,18 +321,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     fontWeight: FontWeight.bold,
                                                   ),
                                                 ),
-                                                ElevatedButton(
-                                                  style: ElevatedButton.styleFrom(
-                                                    backgroundColor:
-                                                        Colors.green.shade700,
-                                                    shape: RoundedRectangleBorder(
-                                                      borderRadius:
-                                                          BorderRadius.circular(
-                                                            8,
-                                                          ),
-                                                    ),
-                                                  ),
-                                                  onPressed: () {
+                                                InkWell(
+                                                  onTap: () {
                                                     showDialog(
                                                       context: context,
                                                       builder:
@@ -359,7 +351,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                                   _addToCart({
                                                                     "menu_id":
                                                                         item.id
-                                                                            .toString(), // ← ✅ Tambahkan ini
+                                                                            .toString(),
                                                                     "title":
                                                                         titleValues
                                                                             .reverse[item
@@ -388,7 +380,28 @@ class _HomeScreenState extends State<HomeScreen> {
                                                           ),
                                                     );
                                                   },
-                                                  child: const Text("Beli"),
+                                                  child: Container(
+                                                    padding:
+                                                        const EdgeInsets.symmetric(
+                                                          horizontal: 16,
+                                                          vertical: 8,
+                                                        ),
+                                                    decoration: BoxDecoration(
+                                                      color: Colors.transparent,
+                                                      borderRadius:
+                                                          BorderRadius.circular(
+                                                            8,
+                                                          ),
+                                                    ),
+                                                    child: const Text(
+                                                      "Beli",
+                                                      style: TextStyle(
+                                                        color: Colors.black,
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                  ),
                                                 ),
                                               ],
                                             ),

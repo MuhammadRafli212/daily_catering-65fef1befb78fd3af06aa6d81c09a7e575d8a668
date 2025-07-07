@@ -2,7 +2,7 @@ import 'package:daily_catering/api/get_customer.dart';
 import 'package:daily_catering/pages/login_page.dart';
 import 'package:flutter/material.dart';
 
-import 'onboard_page.dart'; // Ganti jika nama file atau path berbeda
+import 'onboard_page.dart';
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -16,6 +16,7 @@ class _RegisterPageState extends State<RegisterPage> {
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
   bool isLoading = false;
+  bool obscurePassword = true;
 
   Future<void> _registerUser() async {
     setState(() {
@@ -28,14 +29,14 @@ class _RegisterPageState extends State<RegisterPage> {
     );
     if (res["data"] != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
+        const SnackBar(
           content: Text("Registration successful!"),
           backgroundColor: Colors.green,
         ),
       );
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => LoginPage()),
+        MaterialPageRoute(builder: (context) => const LoginPage()),
       );
     } else if (res["errors"] != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -48,9 +49,6 @@ class _RegisterPageState extends State<RegisterPage> {
     setState(() {
       isLoading = false;
     });
-
-    // } else {
-    // }
   }
 
   @override
@@ -127,12 +125,25 @@ class _RegisterPageState extends State<RegisterPage> {
                 const SizedBox(height: 15),
                 TextField(
                   controller: passwordController,
-                  obscureText: true,
-                  decoration: const InputDecoration(
+                  obscureText: obscurePassword,
+                  decoration: InputDecoration(
                     labelText: "Password",
                     filled: true,
-                    fillColor: Color(0xFFFAF6E9),
-                    border: OutlineInputBorder(),
+                    fillColor: const Color(0xFFFAF6E9),
+                    border: const OutlineInputBorder(),
+                    suffixIcon: IconButton(
+                      icon: Icon(
+                        obscurePassword
+                            ? Icons.visibility_off
+                            : Icons.visibility,
+                        color: Colors.grey[700],
+                      ),
+                      onPressed: () {
+                        setState(() {
+                          obscurePassword = !obscurePassword;
+                        });
+                      },
+                    ),
                   ),
                 ),
                 const SizedBox(height: 30),
@@ -159,10 +170,15 @@ class _RegisterPageState extends State<RegisterPage> {
                       padding: const EdgeInsets.symmetric(vertical: 16),
                       backgroundColor: const Color(0xFFBBC3A4),
                     ),
-                    child: const Text(
-                      "Daftar",
-                      style: TextStyle(color: Colors.black),
-                    ),
+                    child:
+                        isLoading
+                            ? const CircularProgressIndicator(
+                              color: Colors.black,
+                            )
+                            : const Text(
+                              "Daftar",
+                              style: TextStyle(color: Colors.black),
+                            ),
                   ),
                 ),
               ],
